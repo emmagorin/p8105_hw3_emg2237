@@ -109,8 +109,37 @@ Accelerometers have become an appealing alternative to self-report techniques fo
 This problem uses five weeks of accelerometer data collected on a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF). The data can be downloaded here. In this spreadsheet, variables activity.* are the activity counts for each minute of a 24-hour day starting at midnight.
 
 * Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
+
+```{r}
+accelerom = read_csv("./data/accel_data.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(weekday_or_end = recode(day, "Sunday" = "weekend",
+                                  "Monday" = "weekday",
+                                  "Tuesday" = "weekday",
+                                  "Wednesday" = "weekday",
+                                  "Thursday" = "weekday",
+                                  "Friday" = "weekday",
+                                  "Saturday" = "weekend")) %>% 
+  mutate(day = factor(day)) %>% 
+  mutate(weekday_or_end = factor(weekday_or_end)) %>% 
+  select(week, day_id, day, weekday_or_end, everything()) %>% 
+  pivot_longer(cols = starts_with("activity"), names_to = "activity_minute", values_to = "activity_count")
+```
+
+**The accelerometer dataset includes `r nrow(accelerom)` observations, one per minute over the course of a five week period. Variables include week, day, whether it is a weekday or weekend, and "activity count" as recorded by an accelerometer.**
+
 * Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
+
+```{r}
+
+```
+
 * Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
+
+```{r}
+
+```
+
 
 ## Problem 3
 
@@ -124,8 +153,23 @@ data("ny_noaa")
 The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. Then, do or answer the following (commenting on the results of each):
 
 * Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
+
+```{r}
+
+```
+
 * Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
+
+```{r}
+
+```
+
 * Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
+```{r}
+
+```
+
 
 
 
