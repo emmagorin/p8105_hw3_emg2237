@@ -141,9 +141,16 @@ daily_totals = accelerom %>%
 
 * Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
-```{r}
 
+
+```{r}
+accelerom %>% 
+  group_by(day_id) %>% 
+  ggplot(aes(x = activity_minute, y = activity_count, color = day)) +
+  geom_line() +
+  stat_smooth()
 ```
+
 
 
 ## Problem 3
