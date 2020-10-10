@@ -162,7 +162,20 @@ library(p8105.datasets)
 data("ny_noaa")
 ```
 
-The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. Then, do or answer the following (commenting on the results of each):
+The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. 
+
+```{r}
+sum(is.na(ny_noaa$prcp))/nrow(ny_noaa)
+sum(is.na(ny_noaa$snow))/nrow(ny_noaa)
+sum(is.na(ny_noaa$snwd))/nrow(ny_noaa)
+sum(is.na(ny_noaa$tmax))/nrow(ny_noaa)
+sum(is.na(ny_noaa$tmin))/nrow(ny_noaa)
+```
+
+
+**The NY NOAA dataset includes weather `r nrow(ny_noaa)` rows of data, one per date per weather station. These data include several weather related metrics, including measures of precipitation, snowfall, snow depth, and temperature. Missingness is a potential issue, especially for ther temperature variables, which are missing for about 44% of the observations.**
+
+Then, do or answer the following (commenting on the results of each):
 
 * Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
 
