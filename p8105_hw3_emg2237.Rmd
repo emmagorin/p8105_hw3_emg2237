@@ -121,6 +121,7 @@ accelerom = read_csv("./data/accel_data.csv") %>%
                                   "Friday" = "weekday",
                                   "Saturday" = "weekend")) %>% 
   mutate(day = factor(day)) %>% 
+  mutate(day = forcats::fct_relevel(day, c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>% 
   mutate(weekday_or_end = factor(weekday_or_end)) %>% 
   select(week, day_id, day, weekday_or_end, everything()) %>% 
   pivot_longer(cols = starts_with("activity"), names_to = "activity_minute", values_to = "activity_count")
@@ -128,11 +129,15 @@ accelerom = read_csv("./data/accel_data.csv") %>%
 
 **The accelerometer dataset includes `r nrow(accelerom)` observations, one per minute over the course of a five week period. Variables include week, day, whether it is a weekday or weekend, and "activity count" as recorded by an accelerometer.**
 
-* Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
+* Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
 
 ```{r}
-
+daily_totals = accelerom %>% 
+  group_by(week, day) %>% 
+  summarize(total_activity = sum(activity_count)) 
 ```
+
+**There aren't any obvious trends when looking at daily totals. Perhaps any trends will become more apparent when we're looking at a finer timescale.** 
 
 * Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
