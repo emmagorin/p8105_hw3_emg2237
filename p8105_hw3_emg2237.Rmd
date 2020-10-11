@@ -172,7 +172,6 @@ sum(is.na(ny_noaa$tmax))/nrow(ny_noaa)
 sum(is.na(ny_noaa$tmin))/nrow(ny_noaa)
 ```
 
-
 **The NY NOAA dataset includes weather `r nrow(ny_noaa)` rows of data, one per date per weather station. These data include several weather related metrics, including measures of precipitation, snowfall, snow depth, and temperature. Missingness is a potential issue, especially for ther temperature variables, which are missing for about 44% of the observations.**
 
 Then, do or answer the following (commenting on the results of each):
@@ -180,19 +179,45 @@ Then, do or answer the following (commenting on the results of each):
 * Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
 
 ```{r}
-
+ny_noaa_tidy = ny_noaa %>% 
+  separate(date, into = c("year", "month", "day"), convert = TRUE)
 ```
+
+**more data cleaning: doing this separately so I don't have to run the separate function twice, since it took a long time.**
+
+```{r}
+ny_noaa_tidy = ny_noaa_tidy %>% 
+  mutate(prcp = prcp/10) # put in mm like the other variables
+```
+
+**Snowfall is most commonly observed to be 0 - this makes sense, since, well, it usually doesn't snow. **
+
+**Please note for the following questions: my computer took too long to run these for me to effectively check my work. These are my best shot, and I think they should work, but I hope that we'll be able to work with smaller datasets for future assignments...**
 
 * Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
 
 ```{r}
-
+ny_noaa_tidy %>% 
+  filter(month == 01 | month == 07) %>% 
+  group_by(id, year, month) %>% 
+  summarize(mean_tmax = mean(tmax), na.rm = TRUE) %>% 
+  ggplot(aes(x = year, y = mean_tmax, color = id)) +
+  geom_point() +
+  geom_path() +
+  facet_grid(~ month) +
+  theme(legend.position = "none")
 ```
 
 * Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
 
 ```{r}
 
+```
+
+```{r}
+ny_noaa_tidy %>%
+  filter(snow > 0 )
+  
 ```
 
 
