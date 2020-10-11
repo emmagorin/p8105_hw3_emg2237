@@ -7,6 +7,7 @@ output: github_document
 
 ```{r setup, message = FALSE}
 library(tidyverse)
+library(patchwork)
 
 knitr::opts_chunk$set(
   fig.width = 8,
@@ -70,6 +71,8 @@ instacart %>%
   )
 ```
 
+**Again, we can see that vegetables and fruits are most commonly ordered.**
+
 * Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 
 ```{r}
@@ -82,6 +85,8 @@ instacart %>%
   select(aisle, product_name, times_ordered) %>% 
   arrange(aisle, desc(times_ordered))
 ```
+
+**See table for popular items in each category.**
 
 * Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
 
@@ -101,9 +106,10 @@ instacart %>%
   pivot_wider(id_cols = product_name, names_from = day_of_the_week, values_from = time_of_order) 
 ```
 
-**Looks like pink lady apples are typically ordered a little earlier in the day than coffee ice cream. Not too surprising.**
+**Looks like pink lady apples are typically ordered a little earlier in the day than coffee ice cream. Not too surprising - I imagine many people are more likely to be inspired to eat healthy earlier in the day, or alternatively, perhaps organized people who get around to ordering their groceries early in the day are also likely to pick healthier options and go for apples rather than ice cream.**
 
 ## Problem 2
+
 Accelerometers have become an appealing alternative to self-report techniques for studying physical activity in observational studies and clinical trials, largely because of their relative objectivity. During observation periods, the devices measure “activity counts” in a short period; one-minute intervals are common. Because accelerometers can be worn comfortably and unobtrusively, they produce around-the-clock observations.
 
 This problem uses five weeks of accelerometer data collected on a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF). The data can be downloaded here. In this spreadsheet, variables activity.* are the activity counts for each minute of a 24-hour day starting at midnight.
@@ -141,8 +147,6 @@ daily_totals = accelerom %>%
 
 * Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
-
-
 ```{r}
 accelerom %>% 
   group_by(day_id) %>% 
@@ -151,6 +155,7 @@ accelerom %>%
   stat_smooth()
 ```
 
+**Although it's a bit hard to see what's going on in this graph, we can conclude that activity is clustered in the mornings and, it looks like, in the late afternoon/evening. I'm surprised that activity didn't dip more dramatically during the night. It also looks like there is a peak in activity on Sunday afternoons/evenings.**
 
 
 ## Problem 3
@@ -172,7 +177,7 @@ sum(is.na(ny_noaa$tmax))/nrow(ny_noaa)
 sum(is.na(ny_noaa$tmin))/nrow(ny_noaa)
 ```
 
-**The NY NOAA dataset includes weather `r nrow(ny_noaa)` rows of data, one per date per weather station. These data include several weather related metrics, including measures of precipitation, snowfall, snow depth, and temperature. Missingness is a potential issue, especially for ther temperature variables, which are missing for about 44% of the observations.**
+**The NY NOAA dataset includes weather `r nrow(ny_noaa)` rows of data, one per date per weather station. These data include several weather related metrics, including measures of precipitation, snowfall, snow depth, and temperature. Missing data is a potential issue, especially for ther temperature variables, which are missing for about 44% of the observations.**
 
 Then, do or answer the following (commenting on the results of each):
 
@@ -192,7 +197,7 @@ ny_noaa_tidy = ny_noaa_tidy %>%
 
 **Snowfall is most commonly observed to be 0 - this makes sense, since, well, it usually doesn't snow. **
 
-**Please note for the following questions: my computer took too long to run these for me to effectively check my work. These are my best shot, and I think they should work, but I hope that we'll be able to work with smaller datasets for future assignments...**
+**Please note for the following questions: my computer took too long to run these for me to effectively check my work. But, I think they should work. **
 
 * Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
 
@@ -208,16 +213,27 @@ ny_noaa_tidy %>%
   theme(legend.position = "none")
 ```
 
-* Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+* Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); 
 
 ```{r}
+tmax_density = ny_noaa_tidy %>% 
+  ggplot(aes(x = tmax)) +
+  geom_density()
 
+tmin_density = ny_noaa_tidy %>% 
+  ggplot(aes(x = tmin)) +
+  geom_density()
+
+tmax_density + tmin_density
 ```
+
+and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
 
 ```{r}
 ny_noaa_tidy %>%
-  filter(snow > 0 )
-  
+  filter(snow > 0 & snow < 100 ) %>% 
+  ggplot(aes(x = snow, y = year)) +
+  geom_density_ridges(scale = .85)
 ```
 
 
